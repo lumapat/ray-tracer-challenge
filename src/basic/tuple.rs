@@ -18,6 +18,13 @@ impl Tuple {
     }
 }
 
+trait Vector {
+    fn magnitude(&self) -> f64;
+    fn normalize(&self) -> Self;
+    // fn dot(&self, &Self) -> f64;
+    // fn cross(&self, &Self) -> Self;
+}
+
 pub fn point(
     x: f64,
     y: f64,
@@ -33,6 +40,29 @@ pub fn vector(
 ) -> Tuple {
     Tuple{x, y, z, w: 0.0}
 }
+
+impl Vector for Tuple {
+    // TODO: Make Vector a type to restrict this behavior
+    fn magnitude(&self) -> f64 {
+        if self.is_vector() {
+            (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+        } else {
+            0.0
+        }
+    }
+
+    fn normalize(&self) -> Self {
+        let mag = self.magnitude();
+
+        Tuple {
+            x: self.x / mag,
+            y: self.y / mag,
+            z: self.z / mag,
+            w: self.w / mag,
+        }
+    }
+}
+
 
 impl ops::Add for Tuple {
     type Output = Tuple;
@@ -99,8 +129,6 @@ impl ops::Sub for Tuple {
     }
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -156,6 +184,11 @@ mod tests {
         });
         assert_eq!(p.is_vector(), true);
     }
+}
+
+#[cfg(test)]
+mod operation_tests {
+    use super::*;
 
     #[test]
     fn add_tuples() {
@@ -223,5 +256,55 @@ mod tests {
         let a = Tuple{x: 1.0, y: -2.0, z: 3.0, w: -4.0};
 
         assert_eq!(a / 2.0, Tuple{x: 0.5, y: -1.0, z: 1.5, w: -2.0});
+    }
+}
+
+#[cfg(test)]
+mod func_tests {
+    use super::*;
+
+    // TODO: Parametrize wit something pls
+    #[test]
+    fn magnitude_1() {
+        assert_eq!(vector(1.0, 0.0, 0.0).magnitude(), 1.0);
+    }
+
+    #[test]
+    fn magnitude_2() {
+        assert_eq!(vector(0.0, 1.0, 0.0).magnitude(), 1.0);
+    }
+
+    #[test]
+    fn magnitude_3() {
+        assert_eq!(vector(0.0, 0.0, 1.0).magnitude(), 1.0);
+    }
+
+    #[test]
+    fn magnitude_4() {
+        assert_eq!(vector(1.0, 2.0, 3.0).magnitude(), (14.0 as f64).sqrt());
+    }
+
+    #[test]
+    fn magnitude_5() {
+        assert_eq!(vector(-1.0, -2.0, -3.0).magnitude(), (14.0 as f64).sqrt());
+    }
+
+    #[test]
+    fn normalize_1() {
+        assert_eq!(vector(4.0, 0.0, 0.0).normalize(), vector(1.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn normalize_2() {
+        let actual = vector(1.0, 2.0, 3.0).normalize();
+
+        assert_relative_eq!(actual.x, 0.26726, max_relative = 0.00001);
+        assert_relative_eq!(actual.y, 0.53452, max_relative = 0.00001);
+        assert_relative_eq!(actual.z, 0.80178, max_relative = 0.00001);
+    }
+
+    #[test]
+    fn magnitude_of_normalized_vector() {
+        assert_eq!(vector(1.0, 2.0, 3.0).normalize().magnitude(), 1.0);
     }
 }
