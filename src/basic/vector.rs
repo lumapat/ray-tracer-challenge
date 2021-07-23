@@ -81,6 +81,7 @@ mod tuple_trait_tests {
 #[cfg(test)]
 mod vector_trait_tests {
     use super::*;
+    use approx::assert_relative_eq;
 
     // TODO: Parametrize wit something pls
     #[test]
