@@ -1,4 +1,7 @@
-use super::tuple::BasicTuple;
+use super::tuple::{
+    BasicTuple,
+    Tuple,
+};
 
 #[derive(Debug, PartialEq)]
 pub struct Vector(BasicTuple);
@@ -27,6 +30,18 @@ impl Vector {
     // fn cross(&self, &Self) -> Self;
 }
 
+impl Tuple for Vector {
+    fn is_point(&self) -> bool {
+        let Vector(t) = self;
+        t.is_point()
+    }
+
+    fn is_vector(&self) -> bool {
+        let Vector(t) = self;
+        t.is_vector()
+    }
+}
+
 pub fn vector(
     x: f64,
     y: f64,
@@ -36,7 +51,20 @@ pub fn vector(
 }
 
 #[cfg(test)]
-mod tests {
+mod tuple_trait_tests {
+    use super::*;
+
+    #[test]
+    fn vector_is_vector() {
+        let v = vector(4.3, -4.2, 3.1);
+
+        assert_eq!(v.is_point(), false);
+        assert_eq!(v.is_vector(), true);
+    }
+}
+
+#[cfg(test)]
+mod vector_trait_tests {
     use super::*;
 
     // TODO: Parametrize wit something pls

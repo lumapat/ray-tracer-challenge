@@ -23,14 +23,6 @@ impl Tuple for BasicTuple {
     }
 }
 
-pub fn point(
-    x: f64,
-    y: f64,
-    z: f64,
-) -> BasicTuple {
-    BasicTuple{x, y, z, w: 1.0}
-}
-
 impl ops::Add for BasicTuple {
     type Output = BasicTuple;
 
@@ -95,63 +87,6 @@ impl ops::Sub for BasicTuple {
         }
     }
 }
-
-// #[cfg(test)]
-// mod basic_tests {
-//     use super::*;
-
-//     #[test]
-//     fn tuple_is_point() {
-//         let t = BasicTuple {
-//             x: 4.3,
-//             y: -4.2,
-//             z: 3.1,
-//             w: 1.0,
-//         };
-
-//         assert_eq!(t.is_point(), true);
-//         assert_eq!(t.is_vector(), false);
-//     }
-
-//     #[test]
-//     fn tuple_is_vector() {
-//         let t = BasicTuple {
-//             x: 4.3,
-//             y: -4.2,
-//             z: 3.1,
-//             w: 0.0,
-//         };
-
-//         assert_eq!(t.is_point(), false);
-//         assert_eq!(t.is_vector(), true);
-//     }
-
-//     #[test]
-//     fn create_point() {
-//         let p = point(4.0, -4.0, 3.0);
-
-//         assert_eq!(p, BasicTuple {
-//             x: p.x,
-//             y: p.y,
-//             z: p.z,
-//             w: 1.0,
-//         });
-//         assert_eq!(p.is_point(), true);
-//     }
-
-//     #[test]
-//     fn create_vector() {
-//         let p = vector(4.0, -4.0, 3.0);
-
-//         assert_eq!(p, BasicTuple {
-//             x: p.x,
-//             y: p.y,
-//             z: p.z,
-//             w: 0.0,
-//         });
-//         assert_eq!(p.is_vector(), true);
-//     }
-// }
 
 #[cfg(test)]
 mod operation_tests {
