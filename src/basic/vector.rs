@@ -26,8 +26,23 @@ impl Vector {
         })
     }
 
-    // fn dot(&self, &Self) -> f64;
-    // fn cross(&self, &Self) -> Self;
+    fn dot(&self, other: &Self) -> f64 {
+        let Vector(t1) = self;
+        let Vector(t2) = other;
+
+        t1.x * t2.x + t1.y * t2.y + t1.z * t2.z + t1.w * t2.w
+    }
+
+    fn cross(&self, other: &Self) -> Self {
+        let Vector(a) = self;
+        let Vector(b) = other;
+
+        vector(
+            a.y * b.z - a.z * b.y,
+            a.z * b.x - a.x * b.z,
+            a.x * b.y - a.y * b.x,
+        )
+    }
 }
 
 impl Tuple for Vector {
@@ -110,5 +125,22 @@ mod vector_trait_tests {
     #[test]
     fn magnitude_of_normalized_vector() {
         assert_eq!(vector(1.0, 2.0, 3.0).normalize().magnitude(), 1.0);
+    }
+
+    #[test]
+    fn dot_product_of_two_vectors() {
+        let v1 = vector(1.0, 2.0, 3.0);
+        let v2 = vector(2.0, 3.0, 4.0);
+
+        assert_eq!(v1.dot(&v2), 20.0)
+    }
+
+    #[test]
+    fn cross_product_of_two_vectors() {
+        let v1 = vector(1.0, 2.0, 3.0);
+        let v2 = vector(2.0, 3.0, 4.0);
+
+        assert_eq!(v1.cross(&v2), vector(-1.0, 2.0, -1.0));
+        assert_eq!(v2.cross(&v1), vector(1.0, -2.0, 1.0));
     }
 }
