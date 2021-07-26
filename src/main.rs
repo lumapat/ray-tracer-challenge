@@ -3,6 +3,8 @@ use structopt::StructOpt;
 
 mod basic;
 
+use basic::tuple::BasicTuple;
+
 #[derive(Debug, StructOpt)]
 #[structopt(name = "global options", about = "TODO")]
 struct GlobalOptions {
@@ -32,12 +34,14 @@ enum ChapterSummary {
     #[structopt(name = "ch1")]
     ChapterOne {
         // TODO: Don't think there's anything
-    }
+        position: BasicTuple,
+        velocity: BasicTuple,
+    },
 }
 
-fn process_command(chapter_summary: &ChapterSummary, globals: &GlobalOptions) -> Result<(), Box<dyn Error>> {
+fn process_command(chapter_summary: &ChapterSummary, _globals: &GlobalOptions) -> Result<(), Box<dyn Error>> {
     match chapter_summary {
-        ChapterSummary::ChapterOne{} => println!("Good job!!"),
+        ChapterSummary::ChapterOne{position, ..} => println!("{:#?}", position),
     }
 
     Ok(())

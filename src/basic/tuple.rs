@@ -1,11 +1,58 @@
 use std::ops;
+use std::str::FromStr;
+use structopt::StructOpt;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, StructOpt)]
 pub struct BasicTuple {
     pub x: f64,
     pub y: f64,
     pub z: f64,
     pub w: f64,
+}
+
+impl FromStr for BasicTuple {
+    type Err = regex::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let tuple_re = regex::Regex::new(r"\((?P<x>\d+\.?\d*),(?P<y>\d+\.?\d*),(?P<z>\d+\.?\d*)\)")?;
+        let caps = match tuple_re.captures(s) {
+            Some(d) => d,
+            _ => return Err(regex::Error::Syntax("TODO".to_string())),
+        };
+
+        let cap_x = match caps.name("x") {
+            Some(d) => d,
+            _ => return Err(regex::Error::Syntax("TODO".to_string())),
+        };
+
+        let cap_y = match caps.name("y") {
+            Some(d) => d,
+            _ => return Err(regex::Error::Syntax("TODO".to_string())),
+        };
+
+        let cap_z = match caps.name("z") {
+            Some(d) => d,
+            _ => return Err(regex::Error::Syntax("TODO".to_string())),
+        };
+
+
+        let x = match cap_x.as_str().parse::<f64>() {
+            Ok(d) => d,
+            Err(e) => return Err(regex::Error::Syntax(e.to_string())),
+        };
+
+        let y = match cap_y.as_str().parse::<f64>() {
+            Ok(d) => d,
+            Err(e) => return Err(regex::Error::Syntax(e.to_string())),
+        };
+
+        let z = match cap_z.as_str().parse::<f64>() {
+            Ok(d) => d,
+            Err(e) => return Err(regex::Error::Syntax(e.to_string())),
+        };
+
+        Ok(BasicTuple{x, y, z, w: 0.0})
+    }
 }
 
 pub trait Tuple {
