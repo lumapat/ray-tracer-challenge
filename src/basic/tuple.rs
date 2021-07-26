@@ -10,48 +10,45 @@ pub struct BasicTuple {
     pub w: f64,
 }
 
+#[derive(Debug)]
+pub struct TupleParseError(String);
+
+impl std::fmt::Display for TupleParseError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let TupleParseError(s) = self;
+        write!(f, "{}", s)
+    }
+}
+
+impl From<regex::Error> for TupleParseError {
+    fn from(e: regex::Error) -> Self {
+        match e {
+            regex::Error::Syntax(s) => TupleParseError(s),
+            regex::Error::CompiledTooBig(_) => TupleParseError("TODO (too big)".to_string()),
+            _ => TupleParseError("TODO (unknown)".to_string()),
+        }
+    }
+}
+
+impl From<std::num::ParseFloatError> for TupleParseError {
+    fn from(_e: std::num::ParseFloatError) -> Self {
+        TupleParseError("TODO (parse error)".to_string())
+    }
+}
+
 impl FromStr for BasicTuple {
-    type Err = regex::Error;
+    type Err = TupleParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let tuple_re = regex::Regex::new(r"\((?P<x>\d+\.?\d*),(?P<y>\d+\.?\d*),(?P<z>\d+\.?\d*)\)")?;
-        let caps = match tuple_re.captures(s) {
-            Some(d) => d,
-            _ => return Err(regex::Error::Syntax("TODO".to_string())),
-        };
+        let caps = tuple_re.captures(s).ok_or_else(|| TupleParseError("invalid tuple format (#.#, #.#, #.#)".to_string()))?;
 
-        let cap_x = match caps.name("x") {
-            Some(d) => d,
-            _ => return Err(regex::Error::Syntax("TODO".to_string())),
-        };
-
-        let cap_y = match caps.name("y") {
-            Some(d) => d,
-            _ => return Err(regex::Error::Syntax("TODO".to_string())),
-        };
-
-        let cap_z = match caps.name("z") {
-            Some(d) => d,
-            _ => return Err(regex::Error::Syntax("TODO".to_string())),
-        };
-
-
-        let x = match cap_x.as_str().parse::<f64>() {
-            Ok(d) => d,
-            Err(e) => return Err(regex::Error::Syntax(e.to_string())),
-        };
-
-        let y = match cap_y.as_str().parse::<f64>() {
-            Ok(d) => d,
-            Err(e) => return Err(regex::Error::Syntax(e.to_string())),
-        };
-
-        let z = match cap_z.as_str().parse::<f64>() {
-            Ok(d) => d,
-            Err(e) => return Err(regex::Error::Syntax(e.to_string())),
-        };
-
-        Ok(BasicTuple{x, y, z, w: 0.0})
+        Ok(BasicTuple{
+            x: caps.name("x").ok_or_else(|| TupleParseError("missing x value".to_string()))?.as_str().parse::<f64>()?,
+            y: caps.name("y").ok_or_else(|| TupleParseError("missing y value".to_string()))?.as_str().parse::<f64>()?,
+            z: caps.name("z").ok_or_else(|| TupleParseError("missing z value".to_string()))?.as_str().parse::<f64>()?,
+            w: 0.0,
+        })
     }
 }
 
