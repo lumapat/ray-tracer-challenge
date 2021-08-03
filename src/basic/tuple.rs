@@ -2,7 +2,7 @@ use std::ops;
 use std::str::FromStr;
 use structopt::StructOpt;
 
-#[derive(Debug, PartialEq, StructOpt)]
+#[derive(Clone, Debug, PartialEq, StructOpt)]
 pub struct BasicTuple {
     pub x: f64,
     pub y: f64,
@@ -55,6 +55,7 @@ impl FromStr for BasicTuple {
 pub trait Tuple {
     fn is_point(&self) -> bool;
     fn is_vector(&self) -> bool;
+    fn tuple(&self) -> &BasicTuple;
 }
 
 impl Tuple for BasicTuple {
@@ -64,6 +65,10 @@ impl Tuple for BasicTuple {
 
     fn is_vector(&self) -> bool {
         self.w == 0.0
+    }
+
+    fn tuple(&self) -> &BasicTuple {
+        return &self;
     }
 }
 

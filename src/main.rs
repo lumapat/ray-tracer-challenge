@@ -1,9 +1,16 @@
+use std::{
+    thread,
+    time,
+};
 use std::error::Error;
 use structopt::StructOpt;
 
 mod basic;
 
-use basic::tuple::BasicTuple;
+use basic::tuple::{
+    BasicTuple,
+    Tuple,
+};
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "global options", about = "TODO")]
@@ -41,7 +48,20 @@ enum ChapterSummary {
 
 fn process_command(chapter_summary: &ChapterSummary, _globals: &GlobalOptions) -> Result<(), Box<dyn Error>> {
     match chapter_summary {
-        ChapterSummary::ChapterOne{position, ..} => println!("{:#?}", position),
+        ChapterSummary::ChapterOne{position, velocity} => {
+            let sleep_duration = time::Duration::from_secs(1);
+            let mut new_position = basic::point::Point::from(position);
+            let mut new_velocity = basic::vector::Vector::from(velocity);
+            let gravity = basic::vector::vector(0.0, -0.01, 0.0);
+
+            while new_position.tuple().y > 0.0 {
+                new_position = new_position + new_velocity.clone();
+                new_velocity = new_velocity + gravity.clone();
+
+                println!("Position: {:#?}, velocity: {:#?}", new_position, new_velocity);
+                thread::sleep(sleep_duration);
+            }
+        },
     }
 
     Ok(())

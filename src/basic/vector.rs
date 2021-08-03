@@ -1,9 +1,10 @@
+use std::ops;
 use super::tuple::{
     BasicTuple,
     Tuple,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Vector(BasicTuple);
 
 impl Vector {
@@ -55,8 +56,34 @@ impl Tuple for Vector {
         let Vector(t) = self;
         t.is_vector()
     }
+
+    fn tuple(&self) -> &BasicTuple {
+        let Vector(t) = self;
+        return &t;
+    }
 }
 
+impl ops::Add for Vector {
+    type Output = Vector;
+
+    fn add(self, other: Self) -> Self::Output {
+        vector(
+            self.0.x + other.0.x,
+            self.0.y + other.0.y,
+            self.0.z + other.0.z,
+        )
+    }
+}
+
+impl From<&BasicTuple> for Vector {
+    fn from(s: &BasicTuple) -> Vector {
+        vector(
+            s.x,
+            s.y,
+            s.z,
+        )
+    }
+}
 pub fn vector(
     x: f64,
     y: f64,

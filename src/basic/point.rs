@@ -3,7 +3,7 @@ use super::tuple::{
     Tuple,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Point(BasicTuple);
 
 impl Tuple for Point {
@@ -15,6 +15,35 @@ impl Tuple for Point {
     fn is_vector(&self) -> bool {
         let Point(t) = self;
         t.is_vector()
+    }
+
+    fn tuple(&self) -> &BasicTuple {
+        let Point(t) = self;
+        return &t;
+    }
+}
+
+impl std::ops::Add<super::vector::Vector> for Point {
+    type Output = Self;
+
+    fn add(self, other: super::vector::Vector) -> Self::Output {
+        let self_tuple = self.tuple();
+        let other_tuple = other.tuple();
+        point(
+            self_tuple.x + other_tuple.x,
+            self_tuple.y + other_tuple.y,
+            self_tuple.z + other_tuple.z,
+        )
+    }
+}
+
+impl From<&BasicTuple> for Point {
+    fn from(s: &BasicTuple) -> Point {
+        point(
+            s.x,
+            s.y,
+            s.z,
+        )
     }
 }
 
